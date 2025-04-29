@@ -1,0 +1,36 @@
+<!-- templates/verify_mail.html -->
+{% extends 'automated_resume/base.html' %}
+{% load static %}
+{% block title %}Email Verification{% endblock %}
+{% block css %}
+<link rel="stylesheet" type="text/css" href="{% static 'automated_resume/css/verify_mail.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h2 class="text-center">Verify Email</h2>
+        <form method="post">
+            {% csrf_token %}
+            {% if not request.session.otp %}
+                <div class="mb-3">
+                    <label>Email:</label>
+                    {{ form.email }}
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Send OTP</button>
+            {% else %}
+                <div class="mb-3">
+                    <label>Enter OTP:</label>
+                    <input type="text" name="otp" class="form-control" placeholder="Enter OTP">
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Verify</button>
+            {% endif %}
+            {% if messages %}
+                <ul class="messages">
+                    {% for message in messages %}
+                        <li class="{{ message.tags }}">{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </form>
+    </div>
+{% endblock %}

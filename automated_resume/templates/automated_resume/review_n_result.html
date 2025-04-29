@@ -1,0 +1,87 @@
+{% extends 'automated_resume/base.html' %}
+{% load static %}
+{% block title %}Results Page{% endblock %}
+{% block css %}
+    <link rel="stylesheet" href="{% static 'automated_resume/css/review_n_result.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div class="container" id="content-to-download">
+        <h1>Quiz Results & Review</h1>
+        {% if flags != 0 and score >= cutoff %}
+            <h4> Violations were detected and {{ flags }} Flags were raised during quiz. This Information is given to the Hiring team. </h4>
+        {% endif %}
+        {% if score < cutoff %}
+            <div class="status-icon-container">
+                <div class="status-icon">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="12" cy="12" r="12" fill="#F44336"/>
+                        <path d="M7 7L17 17M17 7L7 17" stroke="white" stroke-width="2"/>
+                    </svg>
+                </div>
+            </div>
+            <p class="status-message">You failed, please try again after 6 Months.</p>
+        {% else %}
+            <div class="status-icon-container">
+                <div class="status-icon">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="12" cy="12" r="12" fill="#4CAF50"/>
+                        <path d="M7 13L10 16L17 9" stroke="white" stroke-width="2"/>
+                    </svg>
+                </div>
+            </div>
+            <p class="status-message">Nice job, you passed!</p>
+            <h4 class="status-message eligible">You are now eligible for the coding test please refer sent email for more information.</h4>
+        {% endif %}
+        <div class="results">
+            <div class="result-box">
+                <p class="result-label">YOUR SCORE</p>
+                <p class="result-value">{{ percentage }}%</p>
+            </div>
+            <div class="result-box">
+                <p class="result-label">YOUR POINTS</p>
+                <p class="result-value">{{ score }}</p>
+                <p class="result-subtext">PASSING POINTS: {{ cutoff }}</p>
+            </div>
+        </div>
+
+        <div class="questions">
+            {% for item in review_data %}
+                <div class="question-block">
+                    <h2>Question: {{ item.question }}</h2>
+                        <ul>
+                            {% for option in item.options %}
+                                {% if option == item.correct_option %}
+                                    <li class="option correct">{{ option }} (Correct)</li>
+                                {% elif option == item.selected_option %}
+                                    <li class="option incorrect">{{ option }} (Your choice)</li>
+                                {% else %}
+                                    <li class="option">{{ option }}</li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                    <p>Selected Answer: {{ item.selected_option }}</p>
+                    <p>Correct Answer: {{ item.correct_option }}</p>
+                </div>
+            {% empty %}
+                <p>No questions available for review.</p>
+            {% endfor %}
+        </div>
+
+        <div class="result-summary">
+            <h2>Result Summary</h2>
+            <p>Total Questions: {{ total_questions }}</p>
+            <p>Correct Answers: {{ score }}</p>
+            <p>Result Percentage: {{ percentage }}%</p>
+        </div>
+
+        <div>
+            <button id="download-btn" class="download-button">Download as PDF</button>
+            <a href="{% url 'automated_resume-home' %}" class="exit-button">Exit</a>
+        </div>
+    </div>
+{% endblock %}
+{% block javascript %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
+    <script src={% static 'automated_resume/js/review_n_result.js' %}></script>
+{% endblock %}

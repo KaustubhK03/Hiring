@@ -1,0 +1,41 @@
+{% extends "automated_resume/base.html" %}
+{% load crispy_forms_filters %}
+{% load template_filters %}
+{% block content %}
+    {% for dashboard in dashboard_data %}
+        <h2>{{ dashboard.name }}</h2>
+
+        {% if dashboard.chart_type == "table" %}
+            <table border="1">
+                <tr>
+                    {% for field in dashboard.fields %}
+                        <th>{{ field }}</th>
+                    {% endfor %}
+                </tr>
+                {% for row in dashboard.data %}
+                    <tr>
+                        {% for field in dashboard.fields %}
+                            <td>{{ row|get_item:field }}</td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </table>
+        {% else %}
+            <canvas id="chart-{{ forloop.counter }}"></canvas>
+            <script>
+                var ctx = document.getElementById("chart-{{ forloop.counter }}").getContext("2d");
+                new Chart(ctx, {
+                    type: "{{ dashboard.chart_type }}",
+                    data: {
+                        labels: {{ dashboard.data|map_attribute:"label"|safe }},
+                        datasets: [{
+                            label: "{{ dashboard.name }}",
+                            data: {{ dashboard.data|map_attribute:"value"|safe }},
+                            backgroundColor: ["#ff6384", "#36a2eb", "#ffce56"]
+                        }]
+                    }
+                });
+            </script>
+        {% endif %}
+    {% endfor %}
+{% endblock %}

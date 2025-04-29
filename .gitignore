@@ -1,0 +1,15 @@
+__pycache__/
+*.py[cod]
+*.sqlite3
+*.log
+.env
+*.DS_Store
+*.swp
+db.sqlite3
+/staticfiles/
+/media/
+*.pyc
+*.idea/
+.vscode/
+/JDs/
+resumes.xlsx

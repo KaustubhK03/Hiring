@@ -1,0 +1,60 @@
+{% extends 'automated_resume/base.html' %}
+{% load static %}
+{% block title %}Admin Settings{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" type="text/css" href="{% static 'automated_resume/css/admin_settings.css' %}">
+{% endblock %}
+
+{% block content %}
+<h1>Admin Settings</h1>
+<div class="container">
+    <form id="adminSettingsForm" data-save-url="{% url 'save_admin_settings' %}" data-delete-url="{% url 'delete_user_data' %}">
+        <label for="llm_model">Select LLM Model:</label>
+            <select id="llm_model" name="llm_model">
+                <option value="chatgpt" {% if LLM == 'chatgpt' %}selected{% endif %}>ChatGPT</option>
+                <option value="gemini" {% if LLM == 'gemini' %}selected{% endif %}>Gemini</option>
+            </select>
+        
+        <label for="passing_percent">Passing Percent:</label>
+        <input type="number" id="passing_percent" name="passing_percent" value="{{ PASSING_PERCENT }}" required>
+        
+        <label for="passing_marks">Passing Marks: {{ CUTOFF }}</label>
+
+        <label for="quiz_questions">Total Quiz Questions:</label>
+        <input type="number" id="quiz_questions" name="quiz_questions" value="{{ NUMBER_OF_QUIZ_QUESTIONS }}" required>
+
+        <label for="coding_questions">Total Coding Questions:</label>
+        <input type="number" id="coding_questions" name="coding_questions" value="{{ NUMBER_OF_CODING_QUESTIONS }}" required>
+
+        <label for="violation_frames">Violation Frames Permitted:</label>
+        <input type="number" id="violation_frames" name="violation_frames" value="{{ NUMBER_OF_VIOLATIONS }}" required>
+
+        <label for="job_description">Job Description:</label>
+        <textarea id="job_description" name="job_description" required>{{ JD_TO_USE }}</textarea>
+
+        <label for="quiz_time">Time Limit to finish Quiz:</label>
+        <input type="number" id="quiz_time" name="quiz_time" value="{{ QUIZ_TIME_LIMIT }}" required>
+
+        <label for="coding_time">Time Limit to finish Coding Test:</label>
+        <input type="number" id="coding_time" name="coding_time" value="{{ CODING_TIME_LIMIT }}" required>
+        
+        <label for="firstQuestionDifficulty">Select The Difficulty of the first Coding Question</label>
+        <textarea id="firstQuestionDifficulty" name="firstQuestionDifficulty" required>{{ FIRST_QUESTION_DIFFICULTY }}</textarea>
+
+        <label for="secondQuestionDifficulty">Select The Difficulty of the second Coding Question</label>
+        <textarea id="secondQuestionDifficulty" name="secondQuestionDifficulty" required>{{ SECOND_QUESTION_DIFFICULTY }}</textarea>
+        <button type="submit">Save Settings</button>
+    </form>
+
+    <form id="deleteUserForm" data-delete-url="{% url 'delete_user_data' %}">
+        <label for="email_of_user">Type the email of the user for which you want to delete their result</label>
+        <textarea id="email_of_user" name="email_of_user"></textarea>
+        <button id="deleteUserData">Delete User Data</button>
+    </form>
+</div>
+{% endblock %}
+{% block javascript %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="{% static 'automated_resume/js/admin_settings.js' %}"></script>
+{% endblock %}

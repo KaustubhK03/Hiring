@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Coding Assessment</title>
+  <link rel="stylesheet" href="{% static "automated_resume/css/ide_quiz.css" %}">
+  <link rel="shortcut icon" href="#">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+</head>
+
+<body>
+  <div class="container unselectable">
+    <header class="assessment-header">
+      <img
+        src="https://cdn.builder.io/api/v1/image/assets/TEMP/d2dfe7f356cdff76580ca987ab76d3971238c66f?placeholderIfAbsent=true&apiKey=668f54d4137c46efa02a3c913ecf8bd5
+"
+        alt="Assessment Logo" class="logo" />
+      <h1 class="assessment-title">Test Assessment 2025</h1>
+      <div class="header-controls">
+        <div class="timer-container">
+          <div class="timer-display">
+            <img
+              src="https://cdn.builder.io/api/v1/image/assets/TEMP/06d0e9e669acb26f417b69bf5f0d24bf5133a86a?placeholderIfAbsent=true&apiKey=668f54d4137c46efa02a3c913ecf8bd5
+"
+              alt="Timer Icon" class="timer-icon" />
+            <span class="timer-text" id="timer-element">{{ coding_time_limit }}</span>
+          </div>
+          <div class="timer-progress"></div>
+        </div>
+        <button class="submit-button">Submit Test</button>
+      </div>
+    </header>
+    
+    <main class="assessment-content">
+      {% comment %}Are You sure you want to submit?{% endcomment %}
+      <div id="submitTestModal" class="custom-modal hidden">
+        <div class="custom-modal-content">
+          <h2>Are You sure You want to submit?</h2>
+          <p>This Action will lead to total submission of this test. Do you wish to continue?</p>
+          <button class="close-modal-btn" id="closeSubmitBtn">Cancel</button>
+          <button id="submitTestBtn">Submit</button>
+        </div>
+      </div>
+      {% comment %}Are You sure you want to clear this stub?{% endcomment %}
+      <div id="clearStdinModal" class="custom-modal hidden">
+        <div class="custom-modal-content">
+          <h3>Are you sure you want to clear the code?</h3>
+          <p>This will erase all the code written in the code area. Do you want to continue?</p>
+          <button class="close-modal-btn-violation" id="dontclearStdin">Back</button>
+          <button class="close-modal-btn-violation" id="clearStdin">Clear</button>
+        </div>
+      </div>
+      {% comment %}Start Test Modal{% endcomment %}
+      <div id="startTestModal" class="custom-modal show">
+        <div class="custom-modal-content">
+          <h2>Welcome to the Coding Assessment</h2>
+          <p>Click the button below to start the quiz. Once started, your camera will be turned on and the timer will begin.</p>
+          <button id="startTestBtn">Start Coding Test</button>
+        </div>
+      </div>
+      {% comment %}Violation Detection model{% endcomment %}
+      <div id="violationModal" class="custom-modal hidden">
+        <div class="custom-modal-content">
+          <h3>Violation Detected</h3>
+          <p>Multiple People were detected or phone was detected. 
+            If this happens again the test will be auto-submitted</p>
+          <button class="close-modal-btn-violation" id="closeViolationBtn">OK</button>
+        </div>
+      </div>
+      <!-- Tab switch Violation Modal 2 -->
+      <div id="tabSwitchModal" class="custom-modal hidden">
+        <div class="custom-modal-content">
+          <h3>Violation Detected</h3>
+          <p>Tab Swicthing was detected. If this happens again the test will be auto-submitted</p>
+          <button class="close-modal-btn-tab" id="tabViolationBtn">OK</button>
+        </div>
+      </div>
+      <!-- Full screen Violation Modal 2 -->
+      <div id="fullScreenSwitchModal" class="custom-modal hidden">
+        <div class="custom-modal-content">
+          <h3>Violation Detected</h3>
+          <p>Full screen was exited. If this happens again the test will be auto-submitted. 
+            Also If you don't press OK button within 10 seconds then too the quiz will be auto-submitted</p>
+          <button class="close-modal-btn-fullscreen" id="fullScreenViolationBtn">OK</button>
+        </div>
+      </div>
+      <section class="question-panel">
+        <article class="question-container" id="question-container">
+          <div>
+
+            <div>
+              <img
+              src="https://cdn.builder.io/api/v1/image/assets/TEMP/979d80ed47b33deb3a342d3037e9502f38bfadf6?placeholderIfAbsent=true&apiKey=668f54d4137c46efa02a3c913ecf8bd5
+"
+              alt="Question Icon" class="question-icon" />
+            <hr class="divider" />
+            </div>
+            <div class="question-content">
+              <div class="question-header">
+                <h2 class="section-title">Question</h2>
+                <button class="report-button">
+                  <img
+                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/d122bfe850c607aa2ab5dc6e9f2069dc966c66f3?placeholderIfAbsent=true&apiKey=668f54d4137c46efa02a3c913ecf8bd5
+"
+                    alt="Report Icon" class="report-icon" />
+                  <span>Report Problem</span>
+                </button>
+              </div>
+              <h3 class="problem-title">{{ current_question.Problem_Name }}</h3>
+              <p class="problem-statement">
+                <span style="font-weight: 600;">Problem Statement: </span> {{ current_question.Problem_Statement }}
+              </p>
+              <div class="mt-2">
+                <h2 style="font-weight: 600;">Description:</h2>
+                <p>{{ current_question.Description }}</p>
+              </div>
+              <div class="sample-cases">
+                {% for example_dict in current_question.Public_Test_Cases %}
+                <p class="sample-case">
+                  Sample Input: {{ example_dict.Input }}<br />
+                  Sample Output: {{ example_dict.Expected_Output }}
+                </p>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+          <nav class="question-navigation">
+            <button id="prev-button" class="nav-button prev-button">
+              <img
+                src="https://cdn.builder.io/api/v1/image/assets/TEMP/38293414608eb8a3cd59f8915f634d5946ca5683?placeholderIfAbsent=true&apiKey=668f54d4137c46efa02a3c913ecf8bd5
+"
+                alt="Previous" class="nav-icon" />
+              <span>Previous</span>
+            </button>
+            <button id="next-button" class="nav-button next-button">
+              <span>Next</span>
+              <img
+                src="https://cdn.builder.io/api/v1/image/assets/TEMP/991b12b3b87c951fa78216feb3ea184ab6249ae2?placeholderIfAbsent=true&apiKey=668f54d4137c46efa02a3c913ecf8bd5
+"
+                alt="Next" class="nav-icon" />
+            </button>
+          </nav>
+        </article>
+      </section>
+      {% comment %} <div id="violationModel" class="modal-overlay-three hide">
+        <div class="modal-wrapper-three">
+            <div class="modal-content">
+                This action will erase all the code written in the Stub
+            </div>
+            <div class="close-btn-wrapper">
+                <button class="close-modal-btn-violation">
+                    Clear
+                </button>
+                <button class="close-modal-btn-normal">
+                    Back
+                </button>
+            </div>
+        </div>
+      </div> {% endcomment %}
+      <div id="user-info" class="custom-modal hidden" data-username="{{ request.user.username }}"></div>
+      <section class="code-panel">
+         <div class="editor-header">
+            <div class="editor-title-group">
+              <h2 class="editor-title">Code Editor</h2>
+              <select id="languageName" class="language-select">
+                {% for lang in Available_languages %}
+                  <option value="{{ lang.id }}">{{ lang.name }}</option>
+                {% endfor %}
+                <span class="dropdown-icon">&#9662;</span> <!-- ▼ -->
+              </select>
+            </div>
+            <div class="editor-controls">
+              
+              <!-- <button class="language-select">Select Language</button> -->
+              <button id="mainClearStdinBtn" class="control-button clear-button">Clear Stdin</button>
+              <button class="control-button run-button">
+                <svg class="svg" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg
+" xmlns:xlink="http://www.w3.org/1999/xlink
+" viewBox="0 0 17.804 17.804" xml:space="preserve"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <g id="c98_play"> <path d="M2.067,0.043C2.21-0.028,2.372-0.008,2.493,0.085l13.312,8.503c0.094,0.078,0.154,0.191,0.154,0.313 c0,0.12-0.061,0.237-0.154,0.314L2.492,17.717c-0.07,0.057-0.162,0.087-0.25,0.087l-0.176-0.04 c-0.136-0.065-0.222-0.207-0.222-0.361V0.402C1.844,0.25,1.93,0.107,2.067,0.043z"></path> </g> <g id="Capa_1_78_"> </g> </g> </g></svg>
+                <span id="runBtn">Run code</span>
+              </button>
+              <button id="executeTestCases" class="control-button run-all-button">
+                <svg class="svg" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg
+" xmlns:xlink="http://www.w3.org/1999/xlink
+" viewBox="0 0 17.804 17.804" xml:space="preserve"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <g id="c98_play"> <path d="M2.067,0.043C2.21-0.028,2.372-0.008,2.493,0.085l13.312,8.503c0.094,0.078,0.154,0.191,0.154,0.313 c0,0.12-0.061,0.237-0.154,0.314L2.492,17.717c-0.07,0.057-0.162,0.087-0.25,0.087l-0.176-0.04 c-0.136-0.065-0.222-0.207-0.222-0.361V0.402C1.844,0.25,1.93,0.107,2.067,0.043z"></path> </g> <g id="Capa_1_78_"> </g> </g> </g></svg>
+                <span id="executeTestCases">Run All</span>
+              </button>
+            </div>
+          </div>
+      
+        <div class="code-editor">
+            <textarea id="codeEditor" autocomplete="off" class="editor-content">
+            Start Coding Here
+            </textarea>
+             <span>
+              <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/60979badcab5324984bc57dd6a54ecec44bfa445?placeholderIfAbsent=true&apiKey=668f54d4137c46efa02a3c913ecf8bd5
+" alt="Editor Icon" onclick="#implement full screen functionality here" class="editor-icon" />
+             </span>
+          </div>
+        <section class="test-cases">
+            <div class="test-list">
+              <div class="test-items">
+                {% for tc in current_question.Public_Test_Cases %}
+                  <div id="PublicTestCase{{ forloop.counter0 }}" class="test-case">Test Case {{ forloop.counter }}</div>
+                {% endfor %}
+                {% for tc in current_question.Private_Test_Cases %}
+                  <div id="PrivateTestCase{{ forloop.counter0 }}" class="test-case">Private Test Case {{ forloop.counter }}</div>
+                {% endfor %}
+              </div>
+            </div>
+            {% comment %} <div class="test-results">
+              <div class="results-header">
+                <span>Custom Input</span>
+                <span>Stdout</span>
+              </div>
+              <div class="results-content">
+                  <label class="font-semibold">Input:</label>
+                  <input id="stdin" type="text" class="w-full mt-1 p-2 border border-gray-300 rounded" placeholder="e.g., Marco" />
+              </div>
+              <div>
+                  <label class="font-semibold">Output:</label>
+                    <div id="stdoutBox" class="w-full mt-1 p-2 border border-gray-300 rounded bg-gray-50 h-12 overflow-auto">Your output will appear here...</div>
+              </div>
+            </div> {% endcomment %}
+
+            <div class="test-results" style="display: flex;">
+              <div style="width: 50%;">
+                <div class="results-header">Custom Input</div>
+                  <div class="results-content">
+                    <label class="font-semibold">Input:</label>
+                    <input id="stdin" type="text" class="w-full mt-1 p-2 border border-gray-300 rounded" placeholder="e.g., Marco" />
+                  </div>
+                  <div>
+                      <label class="font-semibold">Output:</label>
+                      <div id="stdoutBox" class="w-full mt-1 p-2 border border-gray-300 rounded bg-gray-50 h-12 overflow-auto">Your output will appear here...</div>
+                  </div>
+                </div>
+              <div style="width: 50%;">
+                <div class="results-header">STDOUT</div>  
+                <div id="testCasesStdoutBox" class="results-content scrollable-stdout"></div>
+              </div>
+            </div>
+          
+        </section>
+          
+      </section>
+    </main>
+  </div>
+  {{ question_list|json_script:"question-data-list" }}
+  {% comment %} <script id="question-data-list" type="application/json">{{ question_list|json_script:"question-data-list" }}</script> {% endcomment %}
+  <script>const coding_time_limit = "{{ coding_time_limit }}";</script>
+  <script type="text/javascript" src="{% static "automated_resume/js/ide_quiz.js" %}"></script>
+</body>
+
+</html>

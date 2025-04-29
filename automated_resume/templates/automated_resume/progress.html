@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Processing...</title>
+    <script>
+        function checkProgress() {
+            fetch(`/progress/{{ task_id }}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === "PROGRESS") {
+                    document.getElementById("progress").innerText = "Progress: " + data.progress.current + "/" + data.progress.total;
+                } else if (data.status === "SUCCESS") {
+                    document.getElementById("progress").innerText = "Processing complete!";
+                    window.location.href = "/home/";  // Redirect to login
+                } else {
+                    document.getElementById("progress").innerText = "Status: " + data.status;
+                }
+            });
+        }
+
+        setInterval(checkProgress, 2000);
+    </script>
+</head>
+<body>
+    <h1>Resume Processing</h1>
+    <p id="progress">Starting...</p>
+</body>
+</html>

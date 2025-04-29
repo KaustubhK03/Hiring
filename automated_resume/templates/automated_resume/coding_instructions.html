@@ -1,0 +1,23 @@
+{% extends 'automated_resume/base.html' %}
+{% load static %}
+{% block title %}Coding setup{% endblock %}
+{% block content %}
+<h1>Coding Instructions with its setup</h1>
+<main>
+    <section class="instructions">
+        <h2>Welcome!</h2>
+        <p>Please read the following instructions carefully before starting the quiz:</p>
+        <ul>
+            <li><strong>Time Limit:</strong> You will have {{ CODING_TIME_LIMIT }} to complete the coding test.</li>
+            <li><strong>Number of Questions:</strong> The Coding test contains {{ NUMBER_OF_CODING_QUESTIONS }} coding questions. </li>
+            <li><strong>No Switching Tabs:</strong> Switching tabs or leaving the quiz page is not allowed. You will be monitored for such activities.</li>
+            <li><strong>No External Resources:</strong> Use of external resources such as search engines, books, or notes is strictly prohibited.</li>
+            <li><strong>Technical Issues:</strong> In case of technical issues, please contact the support team immediately. Make sure your internet connection is stable.</li>
+            <li><strong>Completion:</strong> Ensure you submit your Codes before the time expires. Failure to do so will result in an automatic submission of your latest answer</li>
+            <li><strong>Proctoring:</strong> Please configure your face and audio for monitoring purposes.</li>
+            <li><strong>AI Based Proctoring:</strong> You will be monitored via webcam if any suspicious actvities are detected then flags will be raised and notification will be sent to the HR Team.</li>
+        </ul>
+        <p>Good luck!</p>
+    </main>
+<a id="startTestBtn" class="btn btn-success" href="{% url 'coding_page' %}">Start Test</a>
+{% endblock %}

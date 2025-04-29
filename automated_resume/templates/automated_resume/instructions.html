@@ -1,0 +1,147 @@
+{% extends 'automated_resume/base.html' %}
+
+{% load static %}
+
+{% block title %} Start Quiz {% endblock %}
+    
+{% block css %}
+    <link rel="stylesheet" type="text/css" href="{% static 'automated_resume/css/instructions_style_.css' %}">
+{% endblock %}
+{% block content %}
+    <header id="instructions-header">
+        <h1>Quiz Instructions</h1>
+    </header>
+    <main>
+        <section class="instructions">
+            <h2>Welcome!</h2>
+            <p>Please read the following instructions carefully before starting the quiz:</p>
+            <ul>
+                <li><strong>Time Limit:</strong> You will have {{ quiz_time_limit }} minutes to complete the quiz.</li>
+                <li><strong>Number of Questions:</strong> The quiz contains 30 multiple-choice questions.</li>
+                <li><strong>No Switching Tabs:</strong> Switching tabs or leaving the quiz page is not allowed. You will be monitored for such activities.</li>
+                <li><strong>No External Resources:</strong> Use of external resources such as search engines, books, or notes is strictly prohibited.</li>
+                <li><strong>Technical Issues:</strong> In case of technical issues, please contact the support team immediately. Make sure your internet connection is stable.</li>
+                <li><strong>Completion:</strong> Ensure you submit your quiz answers before the time expires. Failure to do so will result in an automatic submission of your incomplete quiz.</li>
+                <li><strong>Proctoring:</strong> Please configure your face and audio for monitoring purposes.</li>
+                <li><strong>AI Based Proctoring:</strong> You will be monitored via webcam if any suspicious actvities are detected then flags will be raised and notification will be sent to the HR Team.</li>
+            </ul>
+            <p>Good luck!</p>
+        </section>
+        <video id="video" autoplay muted width="500" height="400" class="proctoring-video"></video>
+        <section class="actions">
+            <button type="button" class="start-btn" id="startQuizButton"
+            hx-ext="ws" ws-connect="ws/proctoring" ws-send _="on htmx:wsAfterSend reset () me">Start Quiz</button>
+        </section>
+        <video id="videoFeed" autoplay></video>
+        <!-- Define HTML Modal for when Violations threshold is crossed-->
+        <div id="violationModel" class="modal-overlay-three hide">
+            <div class="modal-wrapper-three">
+                <h1>Suspicious activity detected!</h1>
+                <div class="modal-content">
+                    Multiple People or phones were detected. Next time quiz will be auto-submitted.
+                </div>
+                <div class="close-btn-wrapper">
+                    <button class="close-modal-btn-violation">
+                        Continue Quiz
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Define HTML Modal for when the user presses esc here-->
+        <div class="modal-overlay hide">
+            <div class="modal-wrapper">
+                <h1>Suspicious activity detected!</h1>
+                <div class="modal-content">
+                    If you press ESC again the quiz will get auto-submitted and if you 
+                    do not press the continue button then too we'll auto-submit the quiz.
+                </div>
+                <div class="close-btn-wrapper">
+                    <button class="close-modal-btn">
+                        Continue Quiz
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Define HTML Modal for when the user switches tabs here-->
+        <div class="modal-overlay-four hide">
+            <div class="modal-wrapper">
+                <h1>Suspicious activity detected!</h1>
+                <div class="modal-content">
+                    If you switch tabs again the quiz will be auto-submitted.
+                </div>
+                <div class="close-btn-wrapper">
+                    <button class="close-modal-btn-tab">
+                        Continue Quiz
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Define HTML Modal for when the user has unanswered questions here-->
+        <div class="modal-overlay-two hide">
+            <div class="modal-wrapper-two">
+                <h1>Caution!</h1>
+                <div class="modal-content-two">
+                    You still have questions that are not answered, Are you sure you want to submit the quiz?
+                </div>
+                <div class="close-btn-wrapper-two">
+                    <button class="close-modal-btn-two">
+                        Continue Quiz
+                    </button>
+                    <button class="submit-button-class">
+                        Submit
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Pass the username as a data attribute in a hidden div -->
+        <div id="user-info" data-username="{{ request.user.username }}"></div>
+<!--            # Display these questions once start quiz button is pressed and also erase all the code above-->
+        <div id="quiz-container" style="display: none;">
+            <div class="timer" id="timer">15:00</div>
+
+            <form id="quizForm" method="post" action="{% url 'results-page' %}"
+                    class="unselectable">
+                {% csrf_token %}
+                <!-- Questions -->
+                <div id="questions-container">
+                    {% for question, options in questions_dict.items %}
+                        <div class="question {% if forloop.first %}active{% endif %}" id="question-{{ forloop.counter }}">
+                            <h3 class="unselectable">Question {{ forloop.counter }}</h3>
+                            <p>{{ question }}</p>
+                            {% for option_key, option_value in options.items %}
+                                <label>
+                                    <input type="radio" name="q{{ forloop.parentloop.counter }}" value="{{ option_key }}" data-value="{{ option_value }}">
+                                    {{ option_value }}
+                                </label><br>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Navigation Buttons -->
+                <div class="navigation-buttons">
+                    <button type="button" id="prevButton">Previous</button>
+                    <button type="button" id="nextButton">Next</button>
+                </div>
+
+                <!-- Question Selection Buttons -->
+                <div class="question-nav button">
+                    {% for question in questions_dict %}
+                        <button type="button" data-target="{{ forloop.counter }}" class="unvisited question-nav button">{{ forloop.counter }}</button>
+                    {% endfor %}
+                </div>
+                <!-- Hidden Field to Store Score -->
+                <input type="hidden" name="score" id="score">
+                <input type="hidden" name="fullScreenExited" id="fullScreenExited" value="false">
+                <!-- Submit Button -->
+                <button type="submit" id="submitButton">Submit</button>
+            </form>
+        </div>
+    </main>
+{% endblock %}
+{% block javascript %}
+    <script>const quizTimeLimit = {{ quiz_time_limit }};</script>
+    <script src="{% static 'automated_resume/js/instructions_script_.js' %}"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.12/dist/ext/ws.js"></script>
+{% endblock %}
+

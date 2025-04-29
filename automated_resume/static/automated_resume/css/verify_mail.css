@@ -1,0 +1,80 @@
+body {
+            background-color: #0A1A41;
+            color: white;
+        }
+        .container {
+            margin-top: 100px;
+            max-width: 400px;
+            background: #121e4d;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        }
+        .btn-primary {
+            background-color: #2d64fb;
+            border: none;
+        }
+        /* Base style for the messages container */
+        .messages {
+            list-style-type: none; /* Remove bullet points */
+            padding: 0;
+            margin: 0 0 20px 0; /* Add some margin at the bottom */
+        }
+
+        /* Style for individual messages */
+        .messages li {
+            padding: 10px 15px; /* Add padding */
+            margin-bottom: 10px; /* Space between messages */
+            border-radius: 4px; /* Rounded corners */
+            font-size: 14px; /* Font size */
+            font-weight: bold; /* Bold text */
+            display: flex;
+            align-items: center;
+        }
+
+        /* Success message (green background) */
+        .messages .success {
+            background-color: #d4edda; /* Light green */
+            color: #155724; /* Dark green text */
+            border: 1px solid #c3e6cb; /* Green border */
+        }
+
+        /* Error message (red background) */
+        .messages .error {
+            background-color: #f8d7da; /* Light red */
+            color: #721c24; /* Dark red text */
+            border: 1px solid #f5c6cb; /* Red border */
+        }
+
+        /* Info message (blue background) */
+        .messages .info {
+            background-color: #d1ecf1; /* Light blue */
+            color: #0c5460; /* Dark blue text */
+            border: 1px solid #bee5eb; /* Blue border */
+        }
+
+        /* Warning message (yellow background) */
+        .messages .warning {
+            background-color: #fff3cd; /* Light yellow */
+            color: #856404; /* Dark yellow text */
+            border: 1px solid #ffeeba; /* Yellow border */
+        }
+
+        /* Optional: Add an icon to messages */
+        .messages li::before {
+            content: "✔"; /* Default icon (checkmark) */
+            margin-right: 10px;
+            font-size: 16px;
+        }
+
+        .messages .error::before {
+            content: "✖"; /* Cross icon for errors */
+        }
+
+        .messages .info::before {
+            content: "ℹ"; /* Info icon */
+        }
+
+        .messages .warning::before {
+            content: "⚠"; /* Warning icon */
+        }

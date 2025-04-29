@@ -1,0 +1,45 @@
+{% extends "automated_resume/base.html" %}
+{% load static %}
+{% block title %}Coding Result{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" type="text/css" href="{% static 'automated_resume/css/coding_result.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container" id="content-to-download">
+    <div class="header">
+        <h1>Coding Test Results</h1>
+        <p>Review your coding performance below. We will get back to you with interview 
+            link once your both the assessments are reviewed</p>
+    </div>
+
+    <div class="result-summary">
+        <h2>Total Problems Attempted: {{ total_attempted }}</h2>
+        <h3>Problems Passed: {{ problems_passed }}/{{ total_attempted }}</h3>
+    </div>
+
+    {% for result in coding_results %}
+    <div class="card">
+        <h2>{{ result.problem_name }}</h2>
+        <p class="stats">
+            Test Cases Passed: {{ result.test_cases_passed }} / {{ result.total_test_cases }}
+        </p>
+        <p class="stats">
+            Submission Time: {{ result.submitted_time }}
+        </p>
+        {% if result.passed %}
+            <span class="badge badge-success">Passed</span>
+        {% else %}
+            <span class="badge badge-fail">Failed</span>
+        {% endif %}
+    </div>
+    {% empty %}
+    <p>No coding results available yet.</p>
+    {% endfor %}
+
+    <div class="button-container">
+        <a href="{% url 'automated_resume-home' %}" class="exit-button">Exit</a>
+    </div>
+</div>
+{% endblock %}

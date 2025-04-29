@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+{% load static %}
+{% comment %}
+This is the base.html this template will be used to inherit from, in other templates.
+This template contains the header, so this header will be available on each of the html
+template that inherits it so that we don't have to make a new header for each page.
+{% endcomment %}
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous"/>
+        <link rel="shortcut icon" href="#">
+        <title>{% block title %}{% endblock %}</title>
+        <link rel="stylesheet" type="text/css" href="{% static 'automated_resume/css/base.css' %}">
+        {% block css %}
+        {% endblock %}
+    </head>
+    <body>
+        <!-- Navbar -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="{% url 'landing_page' %}">Resume Analyser</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarColor02">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="{% url 'automated_resume-home' %}">Check Your ATS Score</a>
+                        </li>
+                        {% if user.is_authenticated %}
+                            <span class="navbar-text">Logged in as {{ user.username }} | </span>
+                            <li class="nav-item">
+                                <form method="post" action="{% url 'logout' %}">
+                                    {% csrf_token %}
+                                    <button id="logout-button" class="btn btn-link nav-link">Logout</button>
+                                </form>
+                            </li>
+                            {% if user.is_superuser %}
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'admin_dashboard' %}">View Dashboard</a>
+                                </li>
+                            {% endif %}
+                        {% else %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'login' %}">Login</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'sign_up' %}">Signup</a>
+                            </li>
+                        {% endif %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">About</a>
+                        </li>
+                    </ul>
+                    {% if user.is_authenticated and not user.is_superuser %}
+                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'automated_resume_instructions' %}">Give Quiz</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'verify_email' %}">Give Coding Test</a>
+                        </li>
+                    </ul>
+                    {% endif %}
+                </div>
+            </div>
+        </nav>
+        <!--Modal to prompt user if he really wants to logout-->
+        {% comment %} <div id="overlay" class="overlay-modal hide">
+            <div>
+                <h4>Are you sure you want to logout?</h4>
+                <button id="close-logout-modal" type="button" class="btn btn-light">Close</button>
+                <form method="post" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button class="btn btn-primary" type="submit">Logout</button>
+                </form>
+            </div>
+        </div> {% endcomment %}
+        <!-- Main Content -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %} 
+        {% block content %}
+        {% endblock %}
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+        {% comment %} <script src="{% static 'automated_resume/js/home.js' %}"></script> {% endcomment %}
+        {% block javascript %}
+        {% endblock %}
+    </body>
+</html>

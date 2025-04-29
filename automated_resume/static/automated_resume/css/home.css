@@ -1,0 +1,57 @@
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    z-index: 1000;
+}
+
+.progress-container {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.blurred {
+    filter: blur(5px);
+    pointer-events: none;
+}
+
+/* Styling for the ATS Score */
+#ats-score {
+    font-weight: bold;
+    color: #007bff; /* Bootstrap primary color */
+    font-size: 1.2em;
+}
+
+/* Styling for ATS Remarks */
+#ats-remarks {
+    margin-top: 10px;
+    padding-left: 20px;
+}
+
+#ats-remarks li {
+    margin-bottom: 5px;
+    font-size: 1em;
+    color: #333;
+}
+/* Styling for Missing Keywords */
+#missing-keywords {
+    margin-top: 10px;
+    padding-left: 20px;
+    list-style-type: disc; /* Ensures bullet points */
+}
+
+#missing-keywords li {
+    margin-bottom: 5px;
+    font-size: 1em;
+    color: #d9534f; /* Bootstrap danger color for highlighting missing keywords */
+    font-weight: bold;
+}

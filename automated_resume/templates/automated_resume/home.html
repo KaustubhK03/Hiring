@@ -1,0 +1,39 @@
+{% extends 'automated_resume/base.html' %}
+{% load static %}
+{% block title %}Home{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" type="text/css" href="{% static 'automated_resume/css/home.css' %}">
+{% endblock %}
+
+{% block content %}
+    <!-- Overlay for progress -->
+    <div id="overlay" class="overlay">
+        <div class="progress-container">
+            <h3>Processing Resume...</h3>
+            <progress id="progress-bar" value="0" max="100"></progress>
+            <p id="progress-text">Starting...</p>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div id="main-content" class="blurred">
+        <h2>Welcome, {{ user.username }}</h2>
+        
+        <p><strong>ATS Score:</strong> <span id="ats-score">Loading...</span></p>
+
+        <p><strong>Missing Keywords:</strong></p>
+        <ul id="missing-keywords">
+            <li>Loading...</li>
+        </ul>
+
+        <p><strong>ATS Remarks:</strong></p>
+        <ul id="ats-remarks">
+            <li>Loading...</li>
+        </ul>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    <script src="{% static 'automated_resume/js/home.js' %}"></script>
+{% endblock %}

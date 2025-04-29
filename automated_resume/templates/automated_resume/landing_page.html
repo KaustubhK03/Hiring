@@ -1,0 +1,40 @@
+{% extends "automated_resume/base.html" %}
+{% load static %}
+{% block title %}The Resume Analyser Project{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'automated_resume/css/landing_page.css' %}">
+{% endblock %}
+
+{% block content %}
+
+    <section class="hero">
+        <div class="hero-content">
+            <h2>Transforming the Hiring Process with AI</h2>
+            <p>Our system generates ATS scores, parses resumes, and creates tailored technical questions based on the candidate's skillset.</p>
+            <a href="#" class="cta-button">Learn More</a>
+        </div>
+    </section>
+
+    <section id="features" class="features">
+        <h2>Key Features</h2>
+        <div class="feature-grid">
+            <div class="feature-item">
+                <h3>Automated Resume Screening</h3>
+                <p>Our system extracts relevant details from resumes and calculates an ATS score.</p>
+            </div>
+            <div class="feature-item">
+                <h3>Custom Technical Questionnaire</h3>
+                <p>Generates a quiz based on the candidate’s experience and skills.</p>
+            </div>
+            <div class="feature-item">
+                <h3>AI-Based Proctoring</h3>
+                <p>Detects tab switching, full-screen escape, multiple people, and mobile phones in the frame.</p>
+            </div>
+            <div class="feature-item">
+                <h3>Instant Result Generation</h3>
+                <p>Displays the candidate's performance immediately after the quiz.</p>
+            </div>
+        </div>
+    </section>
+{% endblock %}

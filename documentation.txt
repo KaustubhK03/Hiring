@@ -1,0 +1,363 @@
+1) GET /user-profile/
+
+Fetches the authenticated user’s ATS (Applicant Tracking System) profile data, including:
+	•	ATS Score
+	•	Missing Keywords
+	•	ATS Remarks
+
+Example Response
+{
+  "ats_score": 85,
+  "missing_keywords": ["machine learning", "deep learning", "Python"],
+  "ats_remarks": "Your resume is well-structured, but consider adding more keywords related to AI."
+}
+
+If the user has no associated Profile, the response will be:
+
+{
+  "ats_score": "No Score Available",
+  "missing_keywords": [],
+  "ats_remarks": "No remarks available"
+}
+
+2) Track Task Progress
+
+Endpoint: GET /progress/<task_id>/
+Function: views.task_status
+Description:
+Polls the progress of a resume parsing task initiated via Celery. Returns status updates and final ATS data upon completion.
+
+Request Type: GET
+Authentication: Required (request.user.is_authenticated)
+Path Parameters:
+	•	task_id: UUID of the background task
+
+Response Examples:
+	•	In Progress:
+    {
+    "status": "PROGRESS",
+    "progress": 40.0,
+    "description": "Calculating ATS Score"
+    }
+
+    •	Completed:
+    {
+    "status": "SUCCESS",
+    "ats_score": 87.0,
+    "missing_keywords": ["Leadership", "Scrum"],
+    "ats_remarks": "Well-aligned resume. Minor keyword additions needed."
+    }
+
+    •	Failure:
+    {
+    "status": "FAILURE"
+    }
+
+3) Save Admin Settings
+
+Endpoint: POST /save-admin-settings/
+Function: views.save_admin_settings
+Description:
+Saves system-wide admin configurations like LLM model, quiz settings, time limits, etc.
+
+Request Type: POST
+Authentication: Admin-only (@user_passes_test(lambda u: u.is_superuser))
+Request Payload (Form Data):
+
+{
+  "llm_model": "chatgpt",
+  "passing_percent": 60,
+  "quiz_questions": 30,
+  "coding_questions": 2,
+  "violation_frames": 15,
+  "job_description": "Dot Net Developer",
+  "quiz_time": 15,
+  "coding_time": 60,
+  "firstQuestionDifficulty": "easy",
+  "secondQuestionDifficulty": "medium"
+}
+
+Response Example:
+{
+  "message": "Settings saved successfully."
+}
+
+Error Response:
+{
+  "error": "Invalid request."
+}
+
+4) Delete User Data
+
+Endpoint: POST /delete-user-data/
+Function: views.delete_user_data
+Description:
+Deletes all records (profile, quiz results, coding attempts, emails, etc.) of a user based on email.
+
+Request Type: POST
+Authentication: Admin-only (@user_passes_test(lambda u: u.is_superuser))
+Request Payload (Form Data):
+{
+  "email_of_user": "candidate@example.com"
+}
+
+Response Example:
+{
+  "message": "User data deleted successfully."
+}
+
+Error Response:
+{
+  "error": "Invalid request."
+}
+
+
+5) Save Recording API
+	•	URL: /save-recording/
+	•	Method: POST
+	•	Description: Saves a video file (recorded by the frontend) to the server.
+
+🔧 Request
+	•	Headers: None (CSRF exempted)
+	•	Body (form-data):
+	•	video: Video file blob (e.g., .webm)
+
+    Response
+    {
+    "message": "Recording saved successfully",
+    "file_path": "/path/to/saved/video"
+    }
+
+    Error
+    {
+    "error": "Invalid request"
+    }
+
+6) Save Flags API
+	•	URL: /home/instructions/save_flags/
+	•	Method: POST
+	•	Description: Saves the number of flags (e.g., cheating violations) triggered by a candidate during the session.
+
+🔧 Request
+	•	Headers:
+	•	Content-Type: application/json
+	•	X-CSRFToken: <token>
+	•	Body (JSON):
+    {
+    "flags": 3
+    }
+
+    Response
+    {
+    "status": "success",
+    "flags": 3
+    }
+
+    Error
+    {
+    "status": "error",
+    "message": "Invalid request"
+    }
+
+7) Submit Code API
+	•	URL: /setup/coding/get_code_from_frontend/
+	•	Method: POST
+	•	Description: Submits code to the backend for compilation and execution using the Judge0 API.
+
+🔧 Request
+	•	Headers:
+	•	Content-Type: application/json
+	•	Body (JSON):
+    {
+    "source_code": "<user code>",
+    "language_id": "52",
+    "stdin": "input string"
+    }
+    
+    Response
+    {
+    "stdout": "Hello, world!",
+    "time": "0.01",
+    "memory": 1234,
+    "token": "xyz123",
+    "compile_output": null,
+    "message": null,
+    "status_id": { "id": 3, "description": "Accepted" },
+    "language_id": 52
+    }
+
+8) Run All Test Cases API
+	•	URL: /setup/coding/run_test_cases/
+	•	Method: POST
+	•	Description: Executes the submitted code against both public and private test cases for a specific question.
+
+🔧 Request
+	•	Headers:
+	•	Content-Type: application/json
+	•	Body (JSON):
+    {
+    "source_code": "<user code>",
+    "language_id": "52",
+    "question_id": "1"
+    }
+
+    Response
+    {
+    "decoded_expected_outputs": ["Expected output 1", "Expected output 2"],
+    "decoded_stderrors": [null, null],
+    "decoded_stdins": ["input1", "input2"],
+    "decoded_stdouts": ["output1", "output2"],
+    "public_accepted_lst": ["Accepted", "Wrong Answer"],
+    "private_accepted_lst": ["Accepted", "Accepted"]
+    }
+
+9)  Internal Utility: create_submission()
+	•	Used by: /get_code_from_frontend/
+	•	Function: Creates a code submission by sending it to the Judge0 API.
+	•	Returns: Token for fetching results.
+
+    Sample Request (Internal):
+    {
+    "language_id": "52",
+    "source_code": "<base64 encoded>",
+    "stdin": "<base64 encoded>"
+    }
+
+10) Internal Utility: get_submission(token)
+	•	Used by: /get_code_from_frontend/
+	•	Function: Fetches execution result using a Judge0 token.
+	•	Returns: stdout, compile errors, memory usage, etc.
+
+    URI Parameters
+
+    token
+        string (required) Example: d85cd024-1548-4165-96c7-7bc88673f194
+
+        Token of submission. You got this token when you created submission.
+    base64_encoded
+        boolean (optional) Example: false
+
+        Set to true if you want to receive Base64 encoded data from Judge0. You should set this to true if you expect the program’s stdout to contain non-printable characters or if you expect the compiler to output non-printable characters during a compile error (GCC does this, for instance).
+    fields
+        string (optional) Default: stdout,time,memory,stderr,token,compile_output,message,status Example: stdout,stderr,status_id,language_id
+
+        Return only the desired attributes.
+    
+    Headers
+
+    Content-Type: applicatiion/json
+
+    Body
+
+    {
+    "stdout": "hello, world\n",
+    "status_id": 5,
+    "language_id": 4,
+    "stderr": null
+    }
+
+11) Internal Utility: create_submission_batch()
+	•	Used by: /run_test_cases/
+	•	Function: Submits a batch of test cases (public + private) to Judge0.
+	•	Returns: List of tokens.
+
+    URI Parameters
+
+    tokens
+        string (required) Example: db54881d-bcf5-4c7b-a2e3-d33fe7e25de7,ecc52a9b-ea80-4a00-ad50-4ab6cc3bb2a1,1b35ec3b-5776-48ef-b646-d5522bdeb2cc
+
+        Submission tokens separeted with ,.
+    base64_encoded
+        boolean (optional) Default: false Example: false
+
+        Set to true if you want to receive Base64 encoded data.
+    fields
+        string (optional) Default: stdout,time,memory,stderr,token,compile_output,message,status Example: token,stdout,stderr,status_id,language_id
+
+        Return only the desired attributes.
+
+    Response 200:
+    Headers:
+
+    Content-Type: application/json
+
+    Body:
+
+    {
+    "submissions": [
+        {
+        "language_id": 46,
+        "stdout": "hello from Bash\n",
+        "status_id": 3,
+        "stderr": null,
+        "token": "db54881d-bcf5-4c7b-a2e3-d33fe7e25de7"
+        },
+        {
+        "language_id": 71,
+        "stdout": "hello from Python\n",
+        "status_id": 3,
+        "stderr": null,
+        "token": "ecc52a9b-ea80-4a00-ad50-4ab6cc3bb2a1"
+        },
+        {
+        "language_id": 72,
+        "stdout": "hello from Ruby\n",
+        "status_id": 3,
+        "stderr": null,
+        "token": "1b35ec3b-5776-48ef-b646-d5522bdeb2cc"
+        }
+    ]
+    }
+
+12) get_submission_batch(token_list)
+	•	Used by: /run_test_cases/
+	•	Function: Retrieves results of batch submissions using tokens.
+	•	Returns: Execution results (stdout, stderr, status, etc.) for all test cases.
+
+    URI Parameters
+
+    tokens
+        string (required) Example: db54881d-bcf5-4c7b-a2e3-d33fe7e25de7,ecc52a9b-ea80-4a00-ad50-4ab6cc3bb2a1,1b35ec3b-5776-48ef-b646-d5522bdeb2cc
+
+        Submission tokens separeted with ,.
+    base64_encoded
+        boolean (optional) Default: false Example: false
+
+        Set to true if you want to receive Base64 encoded data.
+    fields
+        string (optional) Default: stdout,time,memory,stderr,token,compile_output,message,status Example: token,stdout,stderr,status_id,language_id
+
+        Return only the desired attributes.
+
+    Response  200:
+    Headers:
+
+    Content-Type: application/json
+
+    Body:
+
+    {
+    "submissions": [
+        {
+        "language_id": 46,
+        "stdout": "hello from Bash\n",
+        "status_id": 3,
+        "stderr": null,
+        "token": "db54881d-bcf5-4c7b-a2e3-d33fe7e25de7"
+        },
+        {
+        "language_id": 71,
+        "stdout": "hello from Python\n",
+        "status_id": 3,
+        "stderr": null,
+        "token": "ecc52a9b-ea80-4a00-ad50-4ab6cc3bb2a1"
+        },
+        {
+        "language_id": 72,
+        "stdout": "hello from Ruby\n",
+        "status_id": 3,
+        "stderr": null,
+        "token": "1b35ec3b-5776-48ef-b646-d5522bdeb2cc"
+        }
+    ]
+    }

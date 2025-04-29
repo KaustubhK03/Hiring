@@ -1,0 +1,178 @@
+{% extends 'automated_resume/base.html' %}
+
+{% load static %}
+
+{% block title %}Admin Dashboard{% endblock %}
+{% block css%}
+    <link rel="stylesheet" href="{% static 'automated_resume/css/dashboard.css' %}">
+{% endblock %}
+{% block content %}
+    <!-- header html start -->
+<div class="header">
+    <div class="container-fluid">
+        <div class="row p-4 ">
+            <div class="col-lg-6 col-md-6 col-sm-12 d-flex justify-content-start align-items-center gap-1">
+                <div class="d-flex">
+                    <a href="{% url 'admin-settings' %}"> <img src="{% static 'automated_resume/img/admin_settings.png' %}" class="logo-set" alt="setting icon with link" height="50" width="50"> Admin Settings </a>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12 ">
+                <div class="d-flex justify-content-end align-items-center gap-1">
+                    <span class="mr-2" style="width: 30px;"> <a href=""><svg xmlns="http://www.w3.org/2000/svg"
+                                width="16" height="16" fill="currentColor" class="bi bi-bell-fill"
+                                viewBox="0 0 16 16">
+                                <path
+                                    d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2m.995-14.901a1 1 0 1 0-1.99 0A5 5 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901" />
+                            </svg></a></span>
+                    <a href="#"> <img class="profile-set" src="{% static 'automated_resume/img/user_profile.png' %}" alt=""> </a>
+                    <div class="font-set ms-2">
+                        <h5>Project Manager</h5>
+                        <p class="mb-0">Admin</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- header html end -->
+
+<!-- left bar html start -->
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-2 col-md2 col-sm-12 height-left-bar p-4">
+            <ul class="list-main">
+                <li class="list-ietam"> <a class="left-text" href="{% url 'admin_dashboard_page2' %}"> <span><svg xmlns="http://www.w3.org/2000/svg"
+                                class="me-3" id="Outline" viewBox="0 0 24 24" width="20" height="20">
+                                <path
+                                    d="M7,0H4A4,4,0,0,0,0,4V7a4,4,0,0,0,4,4H7a4,4,0,0,0,4-4V4A4,4,0,0,0,7,0ZM9,7A2,2,0,0,1,7,9H4A2,2,0,0,1,2,7V4A2,2,0,0,1,4,2H7A2,2,0,0,1,9,4Z" />
+                                <path
+                                    d="M20,0H17a4,4,0,0,0-4,4V7a4,4,0,0,0,4,4h3a4,4,0,0,0,4-4V4A4,4,0,0,0,20,0Zm2,7a2,2,0,0,1-2,2H17a2,2,0,0,1-2-2V4a2,2,0,0,1,2-2h3a2,2,0,0,1,2,2Z" />
+                                <path
+                                    d="M7,13H4a4,4,0,0,0-4,4v3a4,4,0,0,0,4,4H7a4,4,0,0,0,4-4V17A4,4,0,0,0,7,13Zm2,7a2,2,0,0,1-2,2H4a2,2,0,0,1-2-2V17a2,2,0,0,1,2-2H7a2,2,0,0,1,2,2Z" />
+                                <path
+                                    d="M20,13H17a4,4,0,0,0-4,4v3a4,4,0,0,0,4,4h3a4,4,0,0,0,4-4V17A4,4,0,0,0,20,13Zm2,7a2,2,0,0,1-2,2H17a2,2,0,0,1-2-2V17a2,2,0,0,1,2-2h3a2,2,0,0,1,2,2Z" />
+                            </svg>Dashoard</span> </a></li>
+                <li class="list-ietam"> <a class="left-text" href="#"> <span><svg xmlns="http://www.w3.org/2000/svg"
+                                class="me-3" id="Outline" viewBox="0 0 24 24" width="20" height="20">
+                                <path
+                                    d="M7,0H4A4,4,0,0,0,0,4V7a4,4,0,0,0,4,4H7a4,4,0,0,0,4-4V4A4,4,0,0,0,7,0ZM9,7A2,2,0,0,1,7,9H4A2,2,0,0,1,2,7V4A2,2,0,0,1,4,2H7A2,2,0,0,1,9,4Z" />
+                                <path
+                                    d="M20,0H17a4,4,0,0,0-4,4V7a4,4,0,0,0,4,4h3a4,4,0,0,0,4-4V4A4,4,0,0,0,20,0Zm2,7a2,2,0,0,1-2,2H17a2,2,0,0,1-2-2V4a2,2,0,0,1,2-2h3a2,2,0,0,1,2,2Z" />
+                                <path
+                                    d="M7,13H4a4,4,0,0,0-4,4v3a4,4,0,0,0,4,4H7a4,4,0,0,0,4-4V17A4,4,0,0,0,7,13Zm2,7a2,2,0,0,1-2,2H4a2,2,0,0,1-2-2V17a2,2,0,0,1,2-2H7a2,2,0,0,1,2,2Z" />
+                                <path
+                                    d="M20,13H17a4,4,0,0,0-4,4v3a4,4,0,0,0,4,4h3a4,4,0,0,0,4-4V17A4,4,0,0,0,20,13Zm2,7a2,2,0,0,1-2,2H17a2,2,0,0,1-2-2V17a2,2,0,0,1,2-2h3a2,2,0,0,1,2,2Z" />
+                            </svg>Dashoard</span> </a></li>
+                <li class="list-ietam"> <a class="left-text" href="#"> <span><svg xmlns="http://www.w3.org/2000/svg"
+                                class="me-3" id="Outline" viewBox="0 0 24 24" width="20" height="20">
+                                <path
+                                    d="M7,0H4A4,4,0,0,0,0,4V7a4,4,0,0,0,4,4H7a4,4,0,0,0,4-4V4A4,4,0,0,0,7,0ZM9,7A2,2,0,0,1,7,9H4A2,2,0,0,1,2,7V4A2,2,0,0,1,4,2H7A2,2,0,0,1,9,4Z" />
+                                <path
+                                    d="M20,0H17a4,4,0,0,0-4,4V7a4,4,0,0,0,4,4h3a4,4,0,0,0,4-4V4A4,4,0,0,0,20,0Zm2,7a2,2,0,0,1-2,2H17a2,2,0,0,1-2-2V4a2,2,0,0,1,2-2h3a2,2,0,0,1,2,2Z" />
+                                <path
+                                    d="M7,13H4a4,4,0,0,0-4,4v3a4,4,0,0,0,4,4H7a4,4,0,0,0,4-4V17A4,4,0,0,0,7,13Zm2,7a2,2,0,0,1-2,2H4a2,2,0,0,1-2-2V17a2,2,0,0,1,2-2H7a2,2,0,0,1,2,2Z" />
+                                <path
+                                    d="M20,13H17a4,4,0,0,0-4,4v3a4,4,0,0,0,4,4h3a4,4,0,0,0,4-4V17A4,4,0,0,0,20,13Zm2,7a2,2,0,0,1-2,2H17a2,2,0,0,1-2-2V17a2,2,0,0,1,2-2h3a2,2,0,0,1,2,2Z" />
+                            </svg>Dashoard</span> </a></li>
+                <li class="list-ietam"> <a class="left-text" href="#"> <span><svg xmlns="http://www.w3.org/2000/svg"
+                                class="me-3" id="Outline" viewBox="0 0 24 24" width="20" height="20">
+                                <path
+                                    d="M7,0H4A4,4,0,0,0,0,4V7a4,4,0,0,0,4,4H7a4,4,0,0,0,4-4V4A4,4,0,0,0,7,0ZM9,7A2,2,0,0,1,7,9H4A2,2,0,0,1,2,7V4A2,2,0,0,1,4,2H7A2,2,0,0,1,9,4Z" />
+                                <path
+                                    d="M20,0H17a4,4,0,0,0-4,4V7a4,4,0,0,0,4,4h3a4,4,0,0,0,4-4V4A4,4,0,0,0,20,0Zm2,7a2,2,0,0,1-2,2H17a2,2,0,0,1-2-2V4a2,2,0,0,1,2-2h3a2,2,0,0,1,2,2Z" />
+                                <path
+                                    d="M7,13H4a4,4,0,0,0-4,4v3a4,4,0,0,0,4,4H7a4,4,0,0,0,4-4V17A4,4,0,0,0,7,13Zm2,7a2,2,0,0,1-2,2H4a2,2,0,0,1-2-2V17a2,2,0,0,1,2-2H7a2,2,0,0,1,2,2Z" />
+                                <path
+                                    d="M20,13H17a4,4,0,0,0-4,4v3a4,4,0,0,0,4,4h3a4,4,0,0,0,4-4V17A4,4,0,0,0,20,13Zm2,7a2,2,0,0,1-2,2H17a2,2,0,0,1-2-2V17a2,2,0,0,1,2-2h3a2,2,0,0,1,2,2Z" />
+                            </svg>Dashoard</span> </a></li>
+
+            </ul>
+        </div>
+        <div class="col-lg-10 col-md-10 col-sm-12 p-4">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="bg-white shadow p-3 rounded top-box">
+                        <h2>{{ result_data.TopPerformerMail }}</h2>
+                        <p>Top performer</p>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="bg-white shadow p-3 rounded top-box">
+                        <h2>08</h2>
+                        <p>Top performer of week</p>
+                    </div>
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="table-box p-4 bg-white shadow rounded mt-4 table-height">
+                        <table class="main-table">
+                            <tr class="mb-4">
+                                <th>First Name</th>
+                                <th>Last Name</th>
+                                <th>Marks</th>
+                                <th>Flags</th>
+                            </tr>
+                            {% for result in results %}
+                                <tr class="list-sub">
+                                    <td>{{ result.TestID__user__first_name }}</td>
+                                    <td>{{ result.TestID__user__last_name }}</td>
+                                    <td>{{ result.Marks }}</td>
+                                    <td>{{ result.Flags }}</td>
+                                </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class=" p-4 bg-white shadow rounded mt-4 table-height mx-auto">
+                        <!-- graphs here -->
+                        <h4>Test Result Statistics</h4>
+                        <canvas id="resultChart"></canvas>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class=" p-4 bg-white shadow rounded mt-4 table-height mx-auto">
+                        <!-- graphs here -->
+                        <h4>Student Score Bar Graph</h4>
+                        <canvas id="topScoresChart"></canvas>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class=" p-4 bg-white shadow rounded mt-4 table-height">
+                        <!-- graphs here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+<!-- left bar html end -->
+
+<!-- Optional JavaScript; choose one of the two! -->
+{% endblock %}
+{% block javascript %}
+    <!-- Option 1: Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+        integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+        integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+    <script type="module" src="https://public.tableau.com/javascripts/api/tableau.embedding.3.latest.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        var graphData = JSON.parse('{{ graph_data|escapejs }}');
+        var topScoresData = JSON.parse('{{ top_scores_data|escapejs }}')
+    </script>
+    <script src="{% static 'automated_resume/js/dashboard.js' %}"></script>
+{% endblock %}
+</html>

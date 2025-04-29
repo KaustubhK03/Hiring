@@ -1,0 +1,59 @@
+.container {
+    max-width: 1200px;
+    margin: 30px auto;
+    padding: 20px;
+}
+.header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+.result-summary {
+    text-align: center;
+    margin-bottom: 30px;
+}
+.card {
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    transition: box-shadow 0.3s ease-in-out;
+    background-color: #fff;
+}
+.card:hover {
+    box-shadow: 0px 4px 15px rgba(0,0,0,0.1);
+}
+.badge {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 30px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+}
+.badge-success {
+    background-color: #4CAF50;
+}
+.badge-fail {
+    background-color: #F44336;
+}
+.stats {
+    font-size: 16px;
+    margin-top: 10px;
+}
+.button-container {
+    text-align: center;
+    margin-top: 40px;
+}
+.exit-button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    font-size: 16px;
+    border-radius: 30px;
+    cursor: pointer;
+    text-decoration: none;
+}
+.exit-button:hover {
+    background-color: #45a049;
+}

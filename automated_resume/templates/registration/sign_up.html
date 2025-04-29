@@ -1,0 +1,24 @@
+{% extends 'automated_resume/base.html' %}
+{% block title %}Sign Up{% endblock %}
+
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block css %}
+    <link rel="stylesheet" type="text/css" href="{% static 'automated_resume/css/sign_up_auth.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-form">
+        <h2>Sign Up</h2>
+        <p>Join us and take a step ahead in your career journey.</p>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <p>Already have an account? <a href="/login">Login Here</a></p>
+            <button type="submit" class="btn btn-primary">Sign Up</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

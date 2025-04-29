@@ -1,0 +1,27 @@
+{% extends 'automated_resume/base.html' %}
+{% block title %} Login Page {% endblock %}
+
+{% load crispy_forms_tags%}
+{% load static %}
+
+{% block css %}
+    <link rel="stylesheet" type="text/css" href="{% static 'automated_resume/css/login_auth.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div class="auth-container">
+        <div class="auth-image">
+            <img src="{% static 'automated_resume/img/auth_image.jpeg' %}" alt="Login Illustration">
+        </div>
+        <div class="auth-form">
+            <h2>Login</h2>
+            <p>Welcome back! Log in to access your account.</p>
+            <form method="post">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <p>Don't have an account? <a href="/sign-up">Create One</a></p>
+                <button type="submit" class="btn btn-primary">Login</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}
