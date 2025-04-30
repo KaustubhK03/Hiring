@@ -9,6 +9,7 @@ from pprint import pprint
 from datetime import datetime, timedelta
 from django.db.models import Max
 from django.apps import apps
+from django.db.utils import IntegrityError
 from django.shortcuts import render, redirect, get_object_or_404, get_list_or_404
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
@@ -549,10 +550,21 @@ def results(request):
         "flags": flags,
     }
     if score >= cutoff:
+        # try:
+        #     email_obj = EmailManager.objects.get(receiver=request.user.email)
+        # except ObjectDoesNotExist:
+        #     send_email.delay(request.user.email, user_object.id)
         try:
-            email_obj = EmailManager.objects.get(receiver=request.user.email)
-        except ObjectDoesNotExist:
-            send_email.delay(request.user.email, user_object.id)
+            email_obj, created = EmailManager.objects.get_or_create(
+                receiver=request.user,
+                sender=os.getenv("EMAIL"),
+                msg="Email will be sent soon."
+            )
+            if created:
+                print("Sending email to:", request.user.email)
+                send_email.delay(request.user.email, user_object.id)
+        except IntegrityError:
+            return render(request, "automated_resume/review_n_result.html", context)
     return render(request, "automated_resume/review_n_result.html", context)
 
 

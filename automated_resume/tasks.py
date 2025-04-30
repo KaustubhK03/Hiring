@@ -40,9 +40,7 @@ def send_email(self, user_email, resume_data_id):
                     f"Content-Type: text/html; charset=UTF-8\n\n"
                     f"{html_content}"
             )
-        EmailManager.objects.create(
-            receiver=profile_data,
-            sender=os.getenv("EMAIL"),
+        EmailManager.objects.filter(receiver=profile_data).update(
             msg=f"Subject: Coding Test Link\n"
                 f"Content-Type: text/html; charset=UTF-8\n\n"
                 f"{html_content}"
