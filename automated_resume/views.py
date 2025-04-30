@@ -650,6 +650,8 @@ def verify_otp(request):
         email = request.session.get("email")
 
         if entered_otp == stored_otp:
+            # Login the user if OTP is valid
+            login(request, CustomUser.objects.get(email=email))
             messages.success(request, "Email verified successfully!")
             del request.session['otp']
             del request.session['email']
