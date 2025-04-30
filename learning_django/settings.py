@@ -217,7 +217,7 @@ LOGIN_REDIRECT_URL = "/home"
 LOGOUT_REDIRECT_URL = ""
 LOGIN_URL = "/login"
 
-PATH_TO_JDS = "/Volumes/T7/PycharmProjects/Django/Resume_analyser/automated_resume/static/automated_resume/JD"
+PATH_TO_JDS = "/Volumes/T7/PycharmProjects/Django/Resume_analyser/JDs"
 VIDEO_UPLOAD_DIR = "recordings/"
 RESUME_PATH = "resumes/"
 
