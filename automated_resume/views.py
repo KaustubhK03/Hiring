@@ -82,57 +82,71 @@ def get_dashboard_data():
         total_tests = ResultData.objects.count()
         passed_tests = ResultData.objects.filter(Result=True).count()
         failed_tests = total_tests - passed_tests
-        
-        # Find top performers based on highest marks
-        max_marks = ResultData.objects.aggregate(Max("Marks"))["Marks__max"]
-        top_performers = ResultData.objects.filter(Marks=max_marks)
-        top_performer = top_performers.first()
-        top_performer_details = ResultData.objects.filter(Marks=max_marks).select_related("TestID").first()
-        user_profile = top_performer_details.TestID
-        
-        # Get all students and their scores
-        results = ResultData.objects.select_related('TestID__user').values(
-            'TestID__user__first_name',  # First Name
-            'TestID__user__last_name',   # Last Name
-            'TestID__user__gender',
-            'Marks',                     # Percent (Assuming Marks represent percentage)
-            'Flags',                      # Flags
-        ).order_by('-Marks')[:10]
-        # Prepare data for bar chart (Top scores)
-        usernames = []
-        scores = []
-        colors = []
-        
-        for result in results:
-            username = f"{result['TestID__user__first_name']} {result['TestID__user__last_name']}"
-            usernames.append(username)
-            scores.append(result['Marks'])
-            
-            # Gender-based bar color
-            if result['TestID__user__gender'].lower() == "female":
-                colors.append("pink")
-            else:
-                colors.append("blue")
-        
+
         graph_data = {
             "labels": ["Passed", "Failed"],
             "data": [passed_tests, failed_tests],
         }
-        top_performer_data = {
-            "TopPerformerMail": user_profile.user,
-            "TopPerformerMarks": top_performer.Marks,
-            "TopPerformerFlags" : top_performer.Flags,
-        }
-        top_scores_data = {
-            "labels": usernames,
-            "data": scores,
-            "colors": colors
-        }
         dashboard_data = json.dumps(graph_data)
+        cache.set(pie_cache_key, dashboard_data, timeout=300)
+
+        # Handle case when there are no results
+        if total_tests == 0:
+            top_performer_data = {
+                "TopPerformerMail": "N/A",
+                "TopPerformerMarks": 0,
+                "TopPerformerFlags": 0,
+            }
+            results = []
+            top_scores_data = {
+                "labels": [],
+                "data": [],
+                "colors": []
+            }
+        else:
+            max_marks = ResultData.objects.aggregate(Max("Marks"))["Marks__max"]
+            top_performers = ResultData.objects.filter(Marks=max_marks)
+            top_performer = top_performers.first()
+            top_performer_details = ResultData.objects.filter(Marks=max_marks).select_related("TestID").first()
+            user_profile = top_performer_details.TestID
+
+            results = ResultData.objects.select_related('TestID__user').values(
+                'TestID__user__first_name',
+                'TestID__user__last_name',
+                'TestID__user__gender',
+                'Marks',
+                'Flags',
+            ).order_by('-Marks')[:10]
+
+            usernames = []
+            scores = []
+            colors = []
+
+            for result in results:
+                username = f"{result['TestID__user__first_name']} {result['TestID__user__last_name']}"
+                usernames.append(username)
+                scores.append(result['Marks'])
+
+                if result['TestID__user__gender'].lower() == "female":
+                    colors.append("pink")
+                else:
+                    colors.append("blue")
+
+            top_performer_data = {
+                "TopPerformerMail": user_profile.user,
+                "TopPerformerMarks": top_performer.Marks,
+                "TopPerformerFlags": top_performer.Flags,
+            }
+            top_scores_data = {
+                "labels": usernames,
+                "data": scores,
+                "colors": colors
+            }
+
         cache.set(top_performer_cache, top_performer_data, timeout=300)
-        cache.set(pie_cache_key, dashboard_data, timeout=300)  # Cache for 5 minutes
         cache.set(result_cache, results, timeout=300)
         cache.set(bar_chart_cache, json.dumps(top_scores_data), timeout=300)
+
     return dashboard_data, top_performer_data, results, top_scores_data
 
 def extract_email(text):
